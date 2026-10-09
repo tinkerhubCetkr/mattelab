@@ -3,7 +3,8 @@ from "./firebase.js";
 
 import {
     GoogleAuthProvider,
-    signInWithPopup
+    signInWithPopup,
+    onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
 import {
@@ -14,6 +15,14 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
 const provider = new GoogleAuthProvider();
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // User is signed in, redirect immediately
+    window.location.href = "dashboard.html";
+  }
+});
+
 
 document.getElementById("googleLogin").addEventListener("click", async () => {
 
@@ -60,3 +69,5 @@ try {
         alert("Login failed: " + error.message);
         }
     });
+
+    

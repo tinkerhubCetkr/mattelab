@@ -1,93 +1,239 @@
+
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>Makerspace Dashboard</title>
-
-    <style>
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f4f4f4;
-            color: #222;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .dashboard {
-            background: white;
-            width: 90%;
-            max-width: 500px;
-            padding: 35px;
-            border-radius: 14px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-            text-align: center;
-        }
-
-        .dashboard h1 {
-            margin: 0 0 10px;
-            font-size: 28px;
-        }
-
-        .dashboard p {
-            margin: 8px 0;
-            color: #666;
-        }
-
-        #userEmail {
-            font-size: 14px;
-        }
-
-        #logout {
-            margin-top: 25px;
-            padding: 10px 22px;
-            border: none;
-            border-radius: 8px;
-            background: #222;
-            color: white;
-            font-size: 14px;
-            cursor: pointer;
-        }
-
-        #logout:hover {
-            opacity: 0.85;
-        }
-
-    </style>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mattelab</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
-
 <body>
+<div class="app">
+    <!-- Desktop sidebar -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div>
+                <h1>MatteLab</h1>
+                <p>College Of Engineering Trikaripur</p>
+            </div>
+        </div>
 
-    <div class="dashboard">
+        <p class="nav-label">WORKSPACE</p>
 
-        <h1>Makerspace</h1>
-
-        <p id="userName">Loading...</p>
-        <p id="userEmail"></p>
-        <p id="userRole">Loading role...</p>
-
-        <button id="logout">
-            Sign Out
+        <button class="nav-button active" data-section="overview">
+            <span>⌂</span> Overview
+        </button>
+        <button class="nav-button" data-section="events">
+            <span>▦</span> Events
+        </button>
+        <button class="nav-button" data-section="profile">
+            <span>◉</span> My Profile
         </button>
 
-    </div>
+        <div class="sidebar-bottom">
+            <button class="nav-button logout" id="logout">
+                <span>↪</span> Sign Out
+            </button>
+            <p class="muted">Mattelab · Tinkerhub · IEDC</p>
+        </div>
+    </aside>
 
+    <!-- Main area -->
+    <main class="main">
+        <header class="topbar">
+            <div>
+                <h2 id="pageTitle">Overview</h2>
+                <p>Your space to learn, build and create.</p>
+            </div>
+            <div class="avatar" id="avatar">M</div>
+        </header>
+
+        <!-- Overview -->
+        <section class="section active" id="overview">
+            <div class="welcome">
+                <span class="eyebrow">Your makerspace</span>
+                <h3 id="welcomeName">Welcome to Mattelab.</h3>
+                <p>Ideas become real when you start building. Explore
+                   events, learn new skills and make something useful.</p>
+            </div>
+
+            <h3 class="section-heading">Your activity</h3>
+
+            <div class="stats">
+                <div class="stat-card">
+                    <span class="stat-icon">▦</span>
+                    <h3 id="eventCount">—</h3>
+                    <p>Upcoming events</p>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-icon">✓</span>
+                    <h3 id="registrationCount">—</h3>
+                    <p>My registrations</p>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h3>Get started</h3>
+                <p class="muted">
+                    Find your next workshop, hackathon or makerspace event.
+                </p>
+                <button class="nav-button active" data-section="events">
+                    Explore events →
+                </button>
+            </div>
+        </section>
+
+        <!-- Events: functionality comes next -->
+        <section id="events" class="page-section">
+        <div class="section-heading">
+            <div>
+            <h1>Events</h1>
+            <p>Discover workshops, meetups, and makerspace activities.</p>
+            </div>
+        </div>
+
+        <!-- Visible only to approved organizers -->
+        <div id="createEventCard" class="panel" hidden>
+            <h2>Create an event</h2>
+
+            <form id="createEventForm">
+            <label for="eventTitle">Event title</label>
+            <input
+                id="eventTitle"
+                type="text"
+                maxlength="100"
+                placeholder="e.g. Introduction to Arduino"
+                required
+            >
+
+            <label for="eventDescription">Description</label>
+            <textarea
+                id="eventDescription"
+                maxlength="2000"
+                placeholder="What will participants do?"
+                required
+            ></textarea>
+
+            <label for="eventVenue">Venue</label>
+            <input
+                id="eventVenue"
+                type="text"
+                maxlength="150"
+                placeholder="e.g. Mattelab Makerspace"
+                required
+            >
+
+            <label for="eventStart">Start date and time</label>
+            <input id="eventStart" type="datetime-local" required>
+
+            <label for="eventDeadline">Registration deadline</label>
+            <input id="eventDeadline" type="datetime-local" required>
+
+            <label for="eventRegistrationUrl">
+            External registration link (optional)
+            </label>
+
+            <input
+            id="eventRegistrationUrl"
+            type="url"
+
+            maxlength="2048"
+            placeholder="External Link"
+            >
+
+            <p class="event-meta">
+            Leave this empty if participants should register through Mattelab.
+            </p>
+
+
+            <label for="eventCapacity">Maximum participants</label>
+            <input
+                id="eventCapacity"
+                type="number"
+                min="1"
+                max="500"
+                value="30"
+                required
+            >
+
+            <button type="submit" id="createEventButton">
+                Create event
+            </button>
+
+            <p id="eventFormMessage" role="status"></p>
+            </form>
+        </div>
+
+        <div class="events-toolbar">
+            <h2>Upcoming events</h2>
+            <button id="refreshEventsButton" type="button">
+            Refresh
+            </button>
+        </div>
+
+        <p id="eventsMessage" role="status">Loading events...</p>
+        <div id="eventsList" class="events-grid"></div>
+        </section>
+
+        <!-- My Registrations -->
+        <section id="registrations" class="page-section">
+        <div class="section-heading">
+            <div>
+            <h1>My Registrations</h1>
+            <p>Events you've signed up for through Mattelab.</p>
+            </div>
+        </div>
+
+        <button id="refreshRegistrationsButton" type="button">
+            Refresh
+        </button>
+
+        <p id="registrationsMessage" role="status">
+            Loading your registrations...
+        </p>
+
+        <div id="myRegistrationsList" class="events-grid"></div>
+        </section>
+
+
+        <!-- Profile -->
+        <section class="section" id="profile">
+            <h3 class="section-heading">My Profile</h3>
+
+            <div class="panel">
+                <div class="profile-row">
+                    <small>Name</small>
+                    <strong id="profileName">Loading...</strong>
+                </div>
+                <div class="profile-row">
+                    <small>Email</small>
+                    <strong id="profileEmail">Loading...</strong>
+                </div>
+                <div class="profile-row">
+                    <small>Role</small>
+                    <span class="pill" id="profileRole">Loading...</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Mobile bottom navigation -->
+    <nav class="mobile-nav">
+        <button class="nav-button active" data-section="overview">
+            <span>⌂</span><span>Home</span>
+        </button>
+        <button class="nav-button" data-section="events">
+            <span>▦</span><span>Events</span>
+        </button>
+        <button class="nav-button" data-section="profile">
+            <span>◉</span><span>Profile</span>
+        </button>
+        <button class="nav-button logout" id="mobileLogout">
+            <span>↪</span><span>Sign out</span>
+        </button>
+    </nav>
+</div>
 
 <script type="module">
     import { auth, db } from "./firebase.js";
@@ -102,57 +248,99 @@
         getDoc
     } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
-    const userName = document.getElementById("userName");
-    const userEmail = document.getElementById("userEmail");
-    const userRole = document.getElementById("userRole");
-    const logoutButton = document.getElementById("logout");
+    const sections = document.querySelectorAll(".section");
+    const navButtons = document.querySelectorAll("[data-section]");
+    const pageTitle = document.getElementById("pageTitle");
 
-    onAuthStateChanged(auth, async (user) => {
+    const titles = {
+        overview: "Overview",
+        events: "Events",
+        profile: "My Profile"
+    };
+
+    // Switch sections without loading another HTML page
+    function showSection(sectionId) {
+        sections.forEach(section => {
+            section.classList.toggle(
+                "active",
+                section.id === sectionId
+            );
+        });
+
+        navButtons.forEach(button => {
+            button.classList.toggle(
+                "active",
+                button.dataset.section === sectionId
+            );
+        });
+
+        pageTitle.textContent = titles[sectionId] || "Mattelab";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    navButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            showSection(button.dataset.section);
+        });
+    });
+
+    // Load the authenticated user's Firestore profile
+    onAuthStateChanged(auth, async user => {
         if (!user) {
-            window.location.href = "index.html";
+            window.location.replace("index.html");
             return;
         }
 
         try {
-            // Get the user's profile from Firestore
-            const userRef = doc(db, "users", user.uid);
-            const userSnap = await getDoc(userRef);
+            const profileRef = doc(db, "users", user.uid);
+            const profileSnap = await getDoc(profileRef);
 
-            if (userSnap.exists()) {
-                const profile = userSnap.data();
+            const profile = profileSnap.exists()
+                ? profileSnap.data()
+                : {};
 
-                userName.textContent =
-                    `Welcome, ${profile.name || "Student"}`;
+            const name = profile.name || user.displayName || "Student";
+            const email = profile.email || user.email || "";
+            const role = profile.role || "student";
 
-                userEmail.textContent =
-                    profile.email || user.email || "";
+            document.getElementById("welcomeName").textContent =
+                `Welcome, ${name}.`;
 
-                userRole.textContent =
-                    `Role: ${profile.role || "student"}`;
-            } else {
-                userName.textContent =
-                    `Welcome, ${user.displayName || "Student"}`;
+            document.getElementById("profileName").textContent = name;
+            document.getElementById("profileEmail").textContent = email;
+            document.getElementById("profileRole").textContent = role;
 
-                userEmail.textContent = user.email || "";
-                userRole.textContent = "Profile not found";
-            }
+            document.getElementById("avatar").textContent =
+                name.charAt(0).toUpperCase();
+
         } catch (error) {
-            console.error("Error loading profile:", error);
-            userRole.textContent = "Unable to load profile";
+            console.error("Unable to load profile:", error);
+            document.getElementById("profileName").textContent =
+                user.displayName || "Student";
+            document.getElementById("profileEmail").textContent =
+                user.email || "";
+            document.getElementById("profileRole").textContent =
+                "Profile unavailable";
         }
     });
 
-    logoutButton.addEventListener("click", async () => {
+    // Sign out
+    async function handleLogout() {
         try {
             await signOut(auth);
-            window.location.href = "index.html";
+            window.location.replace("index.html");
         } catch (error) {
-            console.error("Logout failed:", error);
-            alert("Unable to sign out. Please try again.");
+            console.error("Sign-out failed:", error);
+            alert("Could not sign out. Please try again.");
         }
-    });
+    }
+
+    document.getElementById("logout")
+        .addEventListener("click", handleLogout);
+
+    document.getElementById("mobileLogout")
+        .addEventListener("click", handleLogout);
 </script>
-
+<script type="module" src="./events.js"></script>
 </body>
-
 </html>
