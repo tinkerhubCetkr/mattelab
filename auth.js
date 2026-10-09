@@ -1,21 +1,56 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-analytics.js";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { auth }
+from "./firebase.js";
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-    apiKey: "AIzaSyDcZnnLtG9--VFYbr6JyDZAM5AfH8JgVXo",
-    authDomain: "mattelab-4f67e.firebaseapp.com",
-    projectId: "mattelab-4f67e",
-    storageBucket: "mattelab-4f67e.firebasestorage.app",
-    messagingSenderId: "213209611299",
-    appId: "1:213209611299:web:2447bc299c8d5ac7d74596",
-    measurementId: "G-10SEKPZVVE"
-};
+import {
+    GoogleAuthProvider,
+    signInWithPopup
+}
+from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+
+const provider =
+    new GoogleAuthProvider();
+
+
+document
+    .getElementById("googleLogin")
+    .addEventListener("click", async () => {
+
+        try {
+
+            const result =
+                await signInWithPopup(auth, provider);
+
+            const user =
+                result.user;
+
+
+            console.log("Login successful!");
+
+            console.log("Name:",
+                user.displayName);
+
+            console.log("Email:",
+                user.email);
+
+            console.log("UID:",
+                user.uid);
+
+
+            window.location.href =
+                "dashboard.html";
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Login failed:",
+                error
+            );
+
+            alert(error.message);
+
+        }
+
+    });
