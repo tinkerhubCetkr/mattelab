@@ -22,9 +22,7 @@
             font-family: Arial, sans-serif;
             background: #f4f4f4;
             color: #222;
-
             min-height: 100vh;
-
             display: flex;
             justify-content: center;
             align-items: center;
@@ -32,16 +30,11 @@
 
         .dashboard {
             background: white;
-
             width: 90%;
             max-width: 500px;
-
             padding: 35px;
-
             border-radius: 14px;
-
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-
             text-align: center;
         }
 
@@ -61,17 +54,12 @@
 
         #logout {
             margin-top: 25px;
-
             padding: 10px 22px;
-
             border: none;
             border-radius: 8px;
-
             background: #222;
             color: white;
-
             font-size: 14px;
-
             cursor: pointer;
         }
 
@@ -90,11 +78,9 @@
 
         <h1>Makerspace</h1>
 
-        <p id="userName">
-            Loading...
-        </p>
-
+        <p id="userName">Loading...</p>
         <p id="userEmail"></p>
+        <p id="userRole">Loading role...</p>
 
         <button id="logout">
             Sign Out
@@ -103,74 +89,69 @@
     </div>
 
 
-    <script type="module">
+<script type="module">
+    import { auth, db } from "./firebase.js";
 
-        import { auth }
-        from "./firebase.js";
+    import {
+        onAuthStateChanged,
+        signOut
+    } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
-        import {
-            onAuthStateChanged,
-            signOut
+    import {
+        doc,
+        getDoc
+    } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+
+    const userName = document.getElementById("userName");
+    const userEmail = document.getElementById("userEmail");
+    const userRole = document.getElementById("userRole");
+    const logoutButton = document.getElementById("logout");
+
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+            window.location.href = "index.html";
+            return;
         }
-        from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
+        try {
+            // Get the user's profile from Firestore
+            const userRef = doc(db, "users", user.uid);
+            const userSnap = await getDoc(userRef);
 
-        const userName =
-            document.getElementById("userName");
-
-        const userEmail =
-            document.getElementById("userEmail");
-
-
-        onAuthStateChanged(auth, (user) => {
-
-            console.log("Auth state:", user);
-
-            if (user) {
+            if (userSnap.exists()) {
+                const profile = userSnap.data();
 
                 userName.textContent =
-                    `Welcome, ${user.displayName}`;
+                    `Welcome, ${profile.name || "Student"}`;
 
                 userEmail.textContent =
-                    user.email;
+                    profile.email || user.email || "";
 
+                userRole.textContent =
+                    `Role: ${profile.role || "student"}`;
+            } else {
+                userName.textContent =
+                    `Welcome, ${user.displayName || "Student"}`;
+
+                userEmail.textContent = user.email || "";
+                userRole.textContent = "Profile not found";
             }
+        } catch (error) {
+            console.error("Error loading profile:", error);
+            userRole.textContent = "Unable to load profile";
+        }
+    });
 
-            else {
-
-                window.location.href =
-                    "index.html";
-
-            }
-
-        });
-
-
-        document
-            .getElementById("logout")
-            .addEventListener("click", async () => {
-
-                try {
-
-                    await signOut(auth);
-
-                    window.location.href =
-                        "index.html";
-
-                }
-
-                catch (error) {
-
-                    console.error(
-                        "Logout error:",
-                        error
-                    );
-
-                }
-
-            });
-
-    </script>
+    logoutButton.addEventListener("click", async () => {
+        try {
+            await signOut(auth);
+            window.location.href = "index.html";
+        } catch (error) {
+            console.error("Logout failed:", error);
+            alert("Unable to sign out. Please try again.");
+        }
+    });
+</script>
 
 </body>
 
